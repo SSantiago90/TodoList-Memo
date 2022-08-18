@@ -19,4 +19,5 @@ function ToDoList({ todos, removeTodo }) {
   );
 }
 
+/* export default React.memo(ToDoList); */
 export default ToDoList;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { customFetch } from "../../utils/customFetch";
@@ -20,10 +20,17 @@ function ToDoContainer() {
     });
   }, []);
 
-  const removeTodo = (idRemove) => {
-    let newTodoList = todos.filter((item) => item.id !== idRemove);
-    setTodos(newTodoList);
-  };
+  const removeTodo = useCallback(
+    (idRemove) => {
+      let newTodoList = todos.filter((item) => item.id !== idRemove);
+      setTodos(newTodoList);
+    }, 
+    [ todos ]
+  )
+
+  const memoizedTodoList = useMemo(
+    () => <ToDoList removeTodo={removeTodo} todos={todos} />, [todos, removeTodo]
+  );
 
   return (
     <div className="containerToDoList">
@@ -37,7 +44,7 @@ function ToDoContainer() {
             <th className="col-1">Remove Todo</th>
           </tr>
         </thead>
-        <ToDoList removeTodo={removeTodo} todos={todos} />
+        {memoizedTodoList}
       </table>
       <ToDoAdd
         setNewTodoText={setNewTodoText}
