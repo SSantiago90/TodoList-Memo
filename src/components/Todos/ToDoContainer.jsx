@@ -20,14 +20,10 @@ function ToDoContainer() {
     });
   }, []);
 
-  function removeTodo() {
-    console.log("removed item");
-  }
-
-  const memoRemoveTodo = React.useCallback(
-    ()=> { removeTodo() },
-    []
-  );
+  const removeTodo = (idRemove) => {
+    let newTodoList = todos.filter((item) => item.id !== idRemove);
+    setTodos(newTodoList);
+  };
 
   return (
     <div className="containerToDoList">
@@ -38,11 +34,16 @@ function ToDoContainer() {
             <th className="col-1">Title </th>
             <th className="col-1">Status</th>
             <th className="col-1">Create At</th>
+            <th className="col-1">Remove Todo</th>
           </tr>
         </thead>
-        <ToDoList removeTodo={memoRemoveTodo} todos={todos} />
+        <ToDoList removeTodo={removeTodo} todos={todos} />
       </table>
-      <ToDoAdd setNewTodoText={setNewTodoText} addTodo={addTodo} />
+      <ToDoAdd
+        setNewTodoText={setNewTodoText}
+        newTodoText={newTodoText}
+        addTodo={addTodo}
+      />
     </div>
   );
 }

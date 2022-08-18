@@ -23,6 +23,9 @@ function ToDo({ id, user, title, date, status, removeTodo }) {
       <td>
         <p>{date}</p>
       </td>
+      <td>
+        <button onClick={() => removeTodo(id)}>X</button>
+      </td>
     </tr>
   );
 }

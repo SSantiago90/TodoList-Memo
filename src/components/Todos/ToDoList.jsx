@@ -1,7 +1,7 @@
 import React from "react";
 import ToDo from "./ToDo";
 
-function ToDoList({ todos }) {
+function ToDoList({ todos, removeTodo }) {
   return (
     <tbody>
       {todos.map((todo) => (
@@ -12,11 +12,11 @@ function ToDoList({ todos }) {
           status={todo.status}
           date={todo.date}
           id={todo.id}
-          removeTodo={todo.removeTodo}
+          removeTodo={removeTodo}
         />
       ))}
     </tbody>
   );
 }
 
-export default React.memo(ToDoList);
+export default ToDoList;
