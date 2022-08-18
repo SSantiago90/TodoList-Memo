@@ -19,11 +19,9 @@ function ToDoContainer() {
     });
   }, []);
 
-  const memoizedList = React.useMemo( 
-    ()=> <ToDoList todos={todos} />, 
-    [todos]
-  );
-
+  function removeTodo(id){
+    console.log("removed item: ", id);
+  }
   return (
     <div className="containerToDoList">
       <table className="min-w-full leading-normal">
@@ -35,7 +33,7 @@ function ToDoContainer() {
             <th className="col-1">Create At</th>
           </tr>
         </thead>
-        {memoizedList}
+        <ToDoList removeTodo={removeTodo} todos={todos} />
       </table>
       <ToDoAdd setNewTodoText={setNewTodoText} addTodo={addTodo} />
     </div>

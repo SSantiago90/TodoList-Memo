@@ -12,10 +12,11 @@ function ToDoList({ todos }) {
           status={todo.status}
           date={todo.date}
           id={todo.id}
+          removeTodo={todo.removeTodo}
         />
       ))}
     </tbody>
   );
 }
 
-export default ToDoList;
+export default React.memo(ToDoList);
