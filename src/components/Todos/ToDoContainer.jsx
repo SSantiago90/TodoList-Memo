@@ -10,26 +10,27 @@ function ToDoContainer() {
   const [todos, setTodos] = useState([]);
   const [newTodoText, setNewTodoText] = useState("");
 
-  function addTodo(newTodo) {
-    setTodos([...todos, newTodo]);
-  }
-
   useEffect(() => {
     customFetch().then((response) => {
       setTodos(response);
     });
   }, []);
 
+  function addTodo(newTodo) {
+    setTodos([...todos, newTodo]);
+  }
+
   const removeTodo = useCallback(
     (idRemove) => {
       let newTodoList = todos.filter((item) => item.id !== idRemove);
       setTodos(newTodoList);
-    }, 
-    [ todos ]
-  )
+    },
+    [todos]
+  );
 
-  const memoizedTodoList = useMemo(
-    () => <ToDoList removeTodo={removeTodo} todos={todos} />, [todos, removeTodo]
+  const memoizedToDoList = useMemo(
+    () => <ToDoList removeTodo={removeTodo} todos={todos} />,
+    [todos, removeTodo]
   );
 
   return (
@@ -44,7 +45,7 @@ function ToDoContainer() {
             <th className="col-1">Remove Todo</th>
           </tr>
         </thead>
-        {memoizedTodoList}
+        {memoizedToDoList}
       </table>
       <ToDoAdd
         setNewTodoText={setNewTodoText}

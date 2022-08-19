@@ -1,9 +1,10 @@
 //react component that adds a new "todo" to a list of "todos" recived from props
 import React from "react";
+import Button from "../Button/Button";
 
 export default function ToDoAdd({ newTodoText, setNewTodoText, addTodo }) {
   function handleSubmit(e) {
-    e.preventDefault();    
+    e.preventDefault();
 
     let randomId = Math.floor(Math.random() * 10000) + 100;
 
@@ -29,7 +30,7 @@ export default function ToDoAdd({ newTodoText, setNewTodoText, addTodo }) {
         <input onChange={handleInputChange} placeholder="Aprende React" />
       </label>
       <br />
-      <button type="submit">Add Todo</button>
+      <Button type="submit">Add Todo</Button>
     </form>
   );
 }

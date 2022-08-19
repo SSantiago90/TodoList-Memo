@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Button from "../Button/Button";
 
 function ToDo({ id, user, title, date, status, removeTodo }) {
   return (
@@ -24,7 +25,9 @@ function ToDo({ id, user, title, date, status, removeTodo }) {
         <p>{date}</p>
       </td>
       <td>
-        <button onClick={() => removeTodo(id)}>X</button>
+        <Button type="isDanger" onClick={() => removeTodo(id)}>
+          X
+        </Button>
       </td>
     </tr>
   );
