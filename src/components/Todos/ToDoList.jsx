@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import ToDo from "./ToDo";
 
 function ToDoList({ todos, removeTodo }) {
@@ -19,5 +19,4 @@ function ToDoList({ todos, removeTodo }) {
   );
 }
 
-/* export default React.memo(ToDoList); */
 export default ToDoList;

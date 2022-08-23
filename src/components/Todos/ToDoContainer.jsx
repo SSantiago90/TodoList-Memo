@@ -1,12 +1,11 @@
-import React, { useCallback, useMemo } from "react";
+import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import ToDoList from "./ToDoList";
 import "./ToDos.css";
 
-/*
- *Nuestros Items
- */
+// * Nuestros Items
+
 const listtodos = [
   {
     id: "1",
@@ -31,9 +30,7 @@ const listtodos = [
   },
 ];
 
-/* 
-  !Nuestro custom Fetch async
-*/
+// ! Nuestro custom Fetch async
 const customFetch = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -42,10 +39,9 @@ const customFetch = () => {
   });
 };
 
-/* 
-  ?Nuestro componente contenedor 
-*/
-function ToDoContainer() {
+// ? Nuestro componente contenedor
+
+export default function ToDoContainer() {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
@@ -54,18 +50,10 @@ function ToDoContainer() {
     });
   }, []);
 
-  const removeTodo = useCallback(
-    (idRemove) => {
-      let newTodoList = todos.filter((item) => item.id !== idRemove);
-      setTodos(newTodoList);
-    },
-    [todos]
-  );
-
-  const memoizedToDoList = useMemo(
-    () => <ToDoList removeTodo={removeTodo} todos={todos} />,
-    [todos, removeTodo]
-  );
+  const removeTodo = (idRemove) => {
+    let newTodoList = todos.filter((item) => item.id !== idRemove);
+    setTodos(newTodoList);
+  };
 
   return (
     <div className="containerToDoList">
@@ -79,15 +67,8 @@ function ToDoContainer() {
             <th className="col-1">Remove Todo</th>
           </tr>
         </thead>
-        {memoizedToDoList}
-      </table>
-      {/*  <ToDoAdd
-        setNewTodoText={setNewTodoText}
-        newTodoText={newTodoText}
-        addTodo={addTodo}
-      /> */}
+        <ToDoList removeTodo={removeTodo} todos={todos} />
+      </table>   
     </div>
   );
 }
-
-export default ToDoContainer;
