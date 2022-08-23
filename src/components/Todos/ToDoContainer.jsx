@@ -4,40 +4,18 @@ import { useEffect } from "react";
 import ToDoList from "./ToDoList";
 import "./ToDos.css";
 
-// * Nuestros Items
-
-const listtodos = [
-  {
-    id: "1",
-    title: "Learn React",
-    status: "in progress",
-    user: "All of Us",
-    date: new Date().toLocaleDateString(),
-  },
-  {
-    id: "2",
-    title: "Learn Context",
-    status: "pending",
-    user: "comision React JS",
-    date: new Date().toLocaleDateString(),
-  },
-  {
-    id: "3",
-    title: "La proxima prepara antes",
-    status: "in progress",
-    user: "comision React JS",
-    date: new Date().toLocaleDateString(),
-  },
-];
+import { getDocs, collection } from "firebase/firestore";
+import db from "../../services/firebase";
 
 // ! Nuestro custom Fetch async
-const customFetch = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(listtodos);
-    }, 500);
+const getAllItems = () => {
+  const todosCollection = collection(db, "todos");
+  getDocs(todosCollection).then((respuesta) => {
+    console.log(respuesta.docs[0].data());
   });
 };
+
+getAllItems();
 
 // ? Nuestro componente contenedor
 
@@ -45,8 +23,24 @@ export default function ToDoContainer() {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    customFetch().then((response) => {
+    /*  getAllItems().then((response) => {
       setTodos(response);
+    }); */
+    const todosCollection = collection(db, "todos");
+    getDocs(todosCollection).then((respuesta) => {
+      const dataMapped = respuesta.docs.map((todo) => {    
+        return {
+          ...todo.data(),
+          /* 
+          title:.... 
+          status:....
+          date:.... */
+          id: todo.id,
+          date: new Date(todo.data().date.seconds * 1000).toLocaleDateString()
+        };
+      });
+      console.log(dataMapped);
+      setTodos(dataMapped);
     });
   }, []);
 
@@ -68,7 +62,7 @@ export default function ToDoContainer() {
           </tr>
         </thead>
         <ToDoList removeTodo={removeTodo} todos={todos} />
-      </table>   
+      </table>
     </div>
   );
 }
