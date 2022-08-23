@@ -1,24 +1,58 @@
 import React, { useCallback, useMemo } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { customFetch } from "../../utils/customFetch";
-import ToDoAdd from "./ToDoAdd";
 import ToDoList from "./ToDoList";
 import "./ToDos.css";
 
+/*
+ *Nuestros Items
+ */
+const listtodos = [
+  {
+    id: "1",
+    title: "Learn React",
+    status: "in progress",
+    user: "All of Us",
+    date: new Date().toLocaleDateString(),
+  },
+  {
+    id: "2",
+    title: "Learn Context",
+    status: "pending",
+    user: "comision React JS",
+    date: new Date().toLocaleDateString(),
+  },
+  {
+    id: "3",
+    title: "La proxima prepara antes",
+    status: "in progress",
+    user: "comision React JS",
+    date: new Date().toLocaleDateString(),
+  },
+];
+
+/* 
+  !Nuestro custom Fetch async
+*/
+const customFetch = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(listtodos);
+    }, 500);
+  });
+};
+
+/* 
+  ?Nuestro componente contenedor 
+*/
 function ToDoContainer() {
   const [todos, setTodos] = useState([]);
-  const [newTodoText, setNewTodoText] = useState("");
 
   useEffect(() => {
     customFetch().then((response) => {
       setTodos(response);
     });
   }, []);
-
-  function addTodo(newTodo) {
-    setTodos([...todos, newTodo]);
-  }
 
   const removeTodo = useCallback(
     (idRemove) => {
@@ -47,11 +81,11 @@ function ToDoContainer() {
         </thead>
         {memoizedToDoList}
       </table>
-      <ToDoAdd
+      {/*  <ToDoAdd
         setNewTodoText={setNewTodoText}
         newTodoText={newTodoText}
         addTodo={addTodo}
-      />
+      /> */}
     </div>
   );
 }
