@@ -4,44 +4,66 @@ import { useEffect } from "react";
 import ToDoList from "./ToDoList";
 import "./ToDos.css";
 
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, query, where } from "firebase/firestore";
 import db from "../../services/firebase";
 
 // ! Nuestro custom Fetch async
 const getAllItems = () => {
-  const todosCollection = collection(db, "todos");
-  getDocs(todosCollection).then((respuesta) => {
-    console.log(respuesta.docs[0].data());
+  return new Promise((resolve) => {
+    const todosCollection = collection(db, "todos");
+    getDocs(todosCollection).then((respuesta) => {
+      const dataMapped = respuesta.docs.map((todo) => ({
+        ...todo.data(),
+        /* 
+          title:.... 
+          status:....
+          date:.... */
+        id: todo.id,
+        date: new Date(todo.data().date.seconds * 1000).toLocaleDateString(),
+      }));
+      resolve(dataMapped);
+    });
   });
 };
 
-getAllItems();
+async function getAllItemsWithAsync() {
+  const todosCollection = collection(db, "todos");
+  /* getDocs(todosCollection).then((respuesta) => { */
+  let respuesta = await getDocs(todosCollection);
+  const dataMapped = respuesta.docs.map((todo) => ({
+    ...todo.data(),
+    id: todo.id,
+    date: new Date().toLocaleDateString(),
+  }));
+  return dataMapped;
+}
+
+const getItemsByStatus = (statusFilter) => {
+  return new Promise((resolve) => {
+    const todosCollection = collection(db, "todos");
+    const q = query(todosCollection, where("status", "==", statusFilter));
+    getDocs(q).then((respuesta) => {
+      const dataMapped = respuesta.docs.map((todo) => ({
+        ...todo.data(),
+        id: todo.id,
+        date: new Date(todo.data().date.seconds * 1000).toLocaleDateString(),
+      }));
+      resolve(dataMapped);
+    });
+  });
+};
 
 // ? Nuestro componente contenedor
-
 export default function ToDoContainer() {
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
-    /*  getAllItems().then((response) => {
-      setTodos(response);
-    }); */
-    const todosCollection = collection(db, "todos");
-    getDocs(todosCollection).then((respuesta) => {
-      const dataMapped = respuesta.docs.map((todo) => {    
-        return {
-          ...todo.data(),
-          /* 
-          title:.... 
-          status:....
-          date:.... */
-          id: todo.id,
-          date: new Date(todo.data().date.seconds * 1000).toLocaleDateString()
-        };
-      });
-      console.log(dataMapped);
-      setTodos(dataMapped);
-    });
+    getAllItemsWithAsync().then((respuesta) => setTodos(respuesta));
+    /* if(categoryParam) 
+            getItemsByStatus("complete").then( respuesta => setTodos(respuesta));    
+          else
+            getAllItems().then( respuesta => setTodos(respuesta));   
+        */
   }, []);
 
   const removeTodo = (idRemove) => {
