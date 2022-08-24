@@ -4,51 +4,55 @@ import { useEffect } from "react";
 import ToDoList from "./ToDoList";
 import "./ToDos.css";
 
-// * Nuestros Items
+import firestoreDB from '../../services/firebase';
+import { getDocs, collection, query, where } from 'firebase/firestore'
 
-const listtodos = [
-  {
-    id: "1",
-    title: "Learn React",
-    status: "in progress",
-    user: "All of Us",
-    date: new Date().toLocaleDateString(),
-  },
-  {
-    id: "2",
-    title: "Learn Context",
-    status: "pending",
-    user: "comision React JS",
-    date: new Date().toLocaleDateString(),
-  },
-  {
-    id: "3",
-    title: "La proxima prepara antes",
-    status: "in progress",
-    user: "comision React JS",
-    date: new Date().toLocaleDateString(),
-  },
-];
-
-// ! Nuestro custom Fetch async
-const customFetch = () => {
+/* 1. todos los items */
+const getItemsFromDB = () => {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(listtodos);
-    }, 500);
-  });
+    const todosCollection = collection(firestoreDB, "todos");
+
+    getDocs(todosCollection).then( snapshot => {
+      const docsData = snapshot.docs.map( doc => {
+        return { ...doc.data(), id: doc.id}        
+      });
+      resolve(docsData);
+      });
+    })      
 };
 
-// ? Nuestro componente contenedor
+/* 2. Items segun categoria  */
+const getItemsFromDBbyStatus = ( statusParam ) => {
+  return new Promise((resolve) => {
+    const todosCollectionRef = collection(firestoreDB, "todos");
+
+    const q = query(todosCollectionRef, where("status", "==", statusParam));
+
+    getDocs(q).then( snapshot => {
+      const docsData = snapshot.docs.map( doc => {
+        return { ...doc.data(), id: doc.id}        
+      });
+      resolve(docsData);
+      });
+    })      
+};
 
 export default function ToDoContainer() {
   const [todos, setTodos] = useState([]);
 
+  const statusFromParams = "in progress"; /* useParams() */
+
   useEffect(() => {
-    customFetch().then((response) => {
-      setTodos(response);
-    });
-  }, []);
+    if (statusFromParams === undefined)
+      getItemsFromDB().then((response) => {
+        setTodos(response);
+      });
+    else{
+      getItemsFromDBbyStatus(statusFromParams).then((response) => {
+        setTodos(response);
+        })
+      }
+  },[]);
 
   const removeTodo = (idRemove) => {
     let newTodoList = todos.filter((item) => item.id !== idRemove);
@@ -67,7 +71,7 @@ export default function ToDoContainer() {
             <th className="col-1">Remove Todo</th>
           </tr>
         </thead>
-        <ToDoList removeTodo={removeTodo} todos={todos} />
+        <ToDoList  todos={todos} removeTodo={removeTodo} />
       </table>   
     </div>
   );

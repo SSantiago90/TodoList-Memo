@@ -9,8 +9,9 @@ function ToDoList({ todos, removeTodo }) {
           key={todo.id}
           user={todo.user}
           title={todo.title}
+          img={todo.img}
           status={todo.status}
-          date={todo.date}
+          /* date={todo.date} */
           id={todo.id}
           removeTodo={removeTodo}
         />
